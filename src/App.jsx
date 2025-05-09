@@ -25,6 +25,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [trendingMoviesLoading, setTrendingMoviesLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
 
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
@@ -85,6 +86,11 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    if (debouncedSearchTerm) {
+      setIsSearching(true);
+    } else {
+      setIsSearching(false);
+    }
     fetchMovies(debouncedSearchTerm);
   }, [debouncedSearchTerm]);
 
@@ -100,7 +106,7 @@ const App = () => {
           </h1>
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
-        {trendingMovies.length > 0 && (
+        {!isSearching && trendingMovies.length > 0 && (
           <section className="trending">
             <h2 className="">Trending Movies</h2>
             {trendingMoviesLoading ? (
@@ -120,7 +126,7 @@ const App = () => {
           </section>
         )}
         <section className="all-movies">
-          <h2 className="">Popular Movies</h2>
+          <h2 className="">{isSearching ? "Results" : "Popular Movies"}</h2>
           {isLoading ? (
             <Spinner />
           ) : errorMessage ? (
